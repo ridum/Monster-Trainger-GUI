@@ -37,13 +37,26 @@ package test;
  */
  
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
  
 public class TabDemo {
     final static String BUTTONPANEL = "Humans";
-    final static String TEXTPANEL = "Monsters";
     final static int extraWindowWidth = 100;
-    private JTextField pointsCount;
+    private JTextField pointsCount = new JTextField("12",20);
+    private JTextField body = new JTextField("0",20);
+    private JTextField intellect= new JTextField("0",20);
+    private JTextField creativity= new JTextField("0",20);
+    private JTextField presence= new JTextField("0",20);
+    private Button AddBody;    // Declare a Button component
+    private Button Addintellect;    // Declare a Button component
+    private Button Addcreativity;    // Declare a Button component
+    private Button Addpresence;    // Declare a Button component
+    static int monsterCounter = 0;
+    private int maxMonsterCounter = 0;
+    
     public void addComponentToPane(Container pane) {
         JTabbedPane tabbedPane = new JTabbedPane();
  
@@ -55,43 +68,136 @@ public class TabDemo {
             public Dimension getPreferredSize() {
                 Dimension size = super.getPreferredSize();
                 size.width += extraWindowWidth;
+                size.height += 300;
                 return size;
             }
         };
-       card1.setLayout(new BoxLayout(card1, BoxLayout.Y_AXIS));
+        card1.setLayout(new BorderLayout(3, 10));
+        
+        JPanel totalPoint = new JPanel();
 //		card1.add(new Label());
-		pointsCount= new JTextField("12");
 		pointsCount.setEditable(false);
-		//card1.add(pointsCount);
-		
-
-		JPanel totalPoint = new JPanel();
-		totalPoint.setPreferredSize( new Dimension( 5, 10 ) );
 		totalPoint.add(new Label("total points"));
 		totalPoint.add(pointsCount);
+		card1.add(totalPoint,BorderLayout.NORTH);
 		
-		//totalPoint.setLayout(new BoxLayout(totalPoint, BoxLayout.Y_AXIS));
-	
+		JPanel seperation= new JPanel();
+		seperation.setLayout(new GridLayout(4, 1, 3, 3));
 		
-		card1.add(totalPoint);
+		JPanel bodyPanel= new JPanel();
+		bodyPanel.add(new Label("body"));
+		bodyPanel.add(body);
+		AddBody = new Button("Add");
+		AddBody.addActionListener(new BtnCountListener());
+		bodyPanel.add(AddBody);    		
+		seperation.add(bodyPanel);
+		
+		JPanel IntPanel= new JPanel();
+		IntPanel.add(new Label("intellect"));
+		IntPanel.add(intellect);
+		Addintellect = new Button("Add");
+		Addintellect.addActionListener(new BtnCountListener());
+		IntPanel.add(Addintellect); 
+		seperation.add(IntPanel);
+		
+		JPanel CreatPanel= new JPanel();
+		CreatPanel.add(new Label("creativity"));
+		CreatPanel.add(creativity);
+		Addcreativity = new Button("Add");
+		Addcreativity.addActionListener(new BtnCountListener());
+		CreatPanel.add(Addcreativity);
+		seperation.add(CreatPanel);
+		
+		JPanel PrePanel= new JPanel();
+		PrePanel.add(new Label("presence"));
+		PrePanel.add(presence);
+		Addpresence = new Button("Add");
+		Addpresence.addActionListener(new BtnCountListener());
+		PrePanel.add(Addpresence);  
+		seperation.add(PrePanel);
+		
+		card1.add(seperation,BorderLayout.CENTER);
+		
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new GridLayout(1, 3, 3, 3));
+		
+		final Button resetButton = new Button("reset");
+		resetButton.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent evt) {
+	        	 body.setText("0");
+	        	 intellect.setText("0");
+	        	 creativity.setText("0");
+	        	 presence.setText("0");
+	        	 pointsCount.setText("12");
+	        	 maxMonsterCounter = 0;
+	        	 monsterCounter = 0;
+	        	 int count= tabbedPane.getTabCount();
+	        	 for(int i=1;i<count;i++){
+	        		 tabbedPane.remove(1);
+	        	 }
+	         }
+	      });
+		buttonsPanel.add(resetButton);
+		
+		final Button AddMonsterButton = new Button("Add Monster");
+		AddMonsterButton.addActionListener(new ActionListener() {
+	         @Override
+	         public void actionPerformed(ActionEvent evt) {
+	             //add a monster
+	        	 //TODO warning messsage
+	        	 if(monsterCounter>= maxMonsterCounter) return;
+	             JPanel card2 = new JPanel(){};
+	             
+	             card2.setLayout(new BoxLayout(card2, BoxLayout.PAGE_AXIS));
+	             John John = new John();
+	             
+	             John.ShownOnPanel(card2,tabbedPane);
+	             tabbedPane.addTab(John.name, card2); 	
+	             monsterCounter++;
+	         }
+	      });
+		buttonsPanel.add(AddMonsterButton);
+		
+		card1.add(buttonsPanel,BorderLayout.SOUTH);
+		
 
-		
-
-		
- 
-        //add a monster
-        JPanel card2 = new JPanel();
-        card2.setLayout(new BoxLayout(card2, BoxLayout.PAGE_AXIS));
-        Monster John = new Monster("John",5,3,4,6,5,7,1);
-        
-        John.ShownOnPanel(card2);
  
         tabbedPane.addTab(BUTTONPANEL, card1);
-        tabbedPane.addTab(TEXTPANEL, card2);
- 
         pane.add(tabbedPane, BorderLayout.CENTER);
     }
  
+
+    private class BtnCountListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent evt) {
+        	int points = Integer.parseInt(pointsCount.getText());
+        	if(points==0) return;
+        	
+        	int bodycount = Integer.parseInt(body.getText());
+        	int intellectcount = Integer.parseInt(intellect.getText());
+        	int creativitycount = Integer.parseInt(creativity.getText());
+        	int presencecount = Integer.parseInt(presence.getText());
+        	if(evt.getSource().equals(AddBody)){
+        		bodycount++;
+        		body.setText(bodycount + "");
+        	}else if(evt.getSource().equals(Addintellect)){	
+        		intellectcount++;
+        		intellect.setText(intellectcount + "");
+        	}else if(evt.getSource().equals(Addcreativity)){
+        		creativitycount++;
+        		creativity.setText(creativitycount + "");
+        	}else if(evt.getSource().equals(Addpresence)){
+        		presencecount++;
+        		presence.setText(presencecount + "");
+        	}
+        	maxMonsterCounter = Math.max(Math.max(Math.max(bodycount,intellectcount),creativitycount),presencecount);
+        	points--;
+        	pointsCount.setText(points + "");
+        }
+
+     }
+    
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -99,7 +205,7 @@ public class TabDemo {
      */
     private static void createAndShowGUI() {
         //Create and set up the window.
-        JFrame frame = new JFrame("TabDemo");
+        JFrame frame = new JFrame("Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
  
         //Create and set up the content pane.
