@@ -56,7 +56,8 @@ public class TabDemo {
     private Button Addpresence;    // Declare a Button component
     static int monsterCounter = 0;
     private int maxMonsterCounter = 0;
-    
+    Object[] monsters = {"John", "Ridum", "Monster"};
+
     public void addComponentToPane(Container pane) {
         JTabbedPane tabbedPane = new JTabbedPane();
  
@@ -147,16 +148,34 @@ public class TabDemo {
 	             //add a monster
 	        	 //TODO warning messsage
 	        	 if(monsterCounter>= maxMonsterCounter) return;
+
+	             String s = (String)JOptionPane.showInputDialog(
+	                     card1,
+	                     "choose a monster:\n",
+	                     "Add Monster",
+	                     JOptionPane.PLAIN_MESSAGE,
+	                     null,
+	                     monsters,
+	                     "John");
+	             Monster m;
+	             switch (s) {
+	             	case "John":  m =  new John();
+	                      break;
+	             	case "Ridum":  m =  new Ridum();
+	             		  break;
+	             	case "Monster":  m =  new Monster("hi",1,2,3,4,5,6,7);
+           		  		 break;
+	                default: return;
+	             }
+
 	             JPanel card2 = new JPanel(){};
-	             
-	             card2.setLayout(new BoxLayout(card2, BoxLayout.PAGE_AXIS));
-	             John John = new John();
-	             
-	             John.ShownOnPanel(card2,tabbedPane);
-	             tabbedPane.addTab(John.name, card2); 	
+	             card2.setLayout(new BoxLayout(card2, BoxLayout.PAGE_AXIS));	            	             	            
+	             m.ShownOnPanel(card2,tabbedPane);
+	             tabbedPane.addTab(m.name, card2); 	
 	             monsterCounter++;
 	         }
 	      });
+		
 		buttonsPanel.add(AddMonsterButton);
 		
 		card1.add(buttonsPanel,BorderLayout.SOUTH);
